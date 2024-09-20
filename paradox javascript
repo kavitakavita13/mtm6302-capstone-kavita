@@ -1,0 +1,125 @@
+// Select the DOM elements
+const searchBtn = document.getElementById('search-btn');
+const searchInput = document.getElementById('search');
+const pokedexContainer = document.getElementById('pokedex-container');
+
+// API endpoint to get Pokémon list with pagination
+const apiBaseURL = "https://pokeapi.co/api/v2/pokemon/";
+let paginationData = null;  // Store pagination data to be used when going back to the list
+
+// Function to fetch Pokémon data (either by query or via pagination)
+const fetchPokemon = async (query = null, paginationURL = null) => {
+    try {
+        let response;
+        
+        // If a specific Pokémon is searched
+        if (query) {
+            response = await fetch(`${apiBaseURL}${query.toLowerCase()}`);
+        } 
+        // If fetching paginated list of Pokémon
+        else {
+            const url = paginationURL || `${apiBaseURL}?offset=0&limit=10`;  // Default URL for first 10 Pokémon
+            response = await fetch(url);
+        }
+
+        if (!response.ok) {
+            throw new Error('Pokémon not found or invalid request!');
+        }
+
+        const data = await response.json();
+
+        // If a Pokémon is searched by name or ID
+        if (query) {
+            displayPokemonDetails(data);
+        } 
+        // If fetching Pokémon list (pagination)
+        else {
+            paginationData = data; // Store pagination data to use when going back
+            displayPokemonList(data);
+        }
+
+    } catch (error) {
+        pokedexContainer.innerHTML = `<p>${error.message}</p>`;
+    }
+};
+
+// Function to display individual Pokémon details
+const displayPokemonDetails = (pokemon) => {
+    pokedexContainer.innerHTML = `
+        <div class="pokemon-card">
+            <img src="${pokemon.sprites.front_default}" alt="${pokemon.name}">
+            <h3>${pokemon.name} (#${pokemon.id})</h3>
+            <p>Type: ${pokemon.types.map(type => type.type.name).join(', ')}</p>
+            <p>Height: ${pokemon.height / 10} m</p>
+            <p>Weight: ${pokemon.weight / 10} kg</p>
+        </div>
+    `;
+
+    // Create the "Back to List" button
+    const backButton = document.createElement('button');
+    backButton.textContent = "Back to List";
+    backButton.classList.add('back-btn');
+    backButton.addEventListener('click', () => {
+        displayPokemonList(paginationData); // Go back to the last viewed list of Pokémon
+    });
+
+    pokedexContainer.appendChild(backButton);
+};
+
+// Function to display the list of Pokémon with pagination
+const displayPokemonList = (data) => {
+    pokedexContainer.innerHTML = ''; // Clear container
+
+    data.results.forEach(pokemon => {
+        // For each Pokémon, create a card with its name
+        const pokemonCard = document.createElement('div');
+        pokemonCard.classList.add('pokemon-card');
+        pokemonCard.innerHTML = `
+            <h3>${pokemon.name}</h3>
+            <a href="#" data-url="${pokemon.url}">View Details</a>
+        `;
+
+        // Add event listener for viewing individual Pokémon details
+        pokemonCard.querySelector('a').addEventListener('click', (event) => {
+            event.preventDefault();
+            fetchPokemon(pokemon.name); // Fetch the Pokémon's detailed data
+        });
+
+        pokedexContainer.appendChild(pokemonCard);
+    });
+
+    // Add Next/Previous buttons for pagination (if available)
+    if (data.previous || data.next) {
+        const navContainer = document.createElement('div');
+        navContainer.classList.add('pagination');
+
+        if (data.previous) {
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Previous';
+            prevBtn.addEventListener('click', () => fetchPokemon(null, data.previous));
+            navContainer.appendChild(prevBtn);
+        }
+
+        if (data.next) {
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Next';
+            nextBtn.addEventListener('click', () => fetchPokemon(null, data.next));
+            navContainer.appendChild(nextBtn);
+        }
+
+        pokedexContainer.appendChild(navContainer);
+    }
+};
+
+// Event listener for search button
+searchBtn.addEventListener('click', () => {
+    const query = searchInput.value.trim();
+    if (query) {
+        fetchPokemon(query); // Fetch Pokémon by name or ID
+    } else {
+        pokedexContainer.innerHTML = `<p>Please enter a valid Pokémon name or ID.</p>`;
+    }
+});
+
+// Initial fetch for the first Pokémon list
+fetchPokemon(); // This will load the first page of Pokémon by default
