@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Pokédex</h1>
+    </header>
+
+    <!-- Pokémon List Section -->
+    <section id="pokemon-list">
+        <!-- Pokémon thumbnails and names will be dynamically added here -->
+    </section>
+
+    <!-- Load More Button -->
+    <button id="load-more">Load More</button>
+
+    <!-- Pokémon Detail Modal (Hidden by default) -->
+    <div id="pokemon-detail-modal" class="modal">
+        <div class="modal-content">
+            
+            <!-- Close Button -->
+            <span class="close">&times;</span>
+
+            <!-- Pokémon Information -->
+            <h2 id="pokemon-name"></h2>
+            <img id="pokemon-image" src="" alt="">
+            <p id="pokemon-description"></p>
+
+            <!-- Buttons for Catching and Releasing Pokémon -->
+            <button id="catch-button">Catch Pokémon</button>
+            <button id="release-button" style="display:none;">Release Pokémon</button> <!-- Initially hidden -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
