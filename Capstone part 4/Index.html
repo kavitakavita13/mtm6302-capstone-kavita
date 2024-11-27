@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="C:\Users\kavit\Desktop\Capstone part 4\Styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Pokédex Explorer</h1>
+    </header>
+    <main class="main-container">
+        <section class="pokemon-list-section">
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Search Pokémon by name..." />
+                <button id="search-btn" class="btn-search">Search</button>
+            </div>
+            <div id="pokemon-list" class="pokemon-list">
+                <!-- Pokémon cards will load dynamically -->
+            </div>
+            <button id="load-more" class="btn-load-more">Load More Pokémon</button>
+        </section>
+        <aside class="caught-pokemon">
+            <h2>Caught Pokémon</h2>
+            <ul id="caught-list">
+                <!-- Caught Pokémon will appear here -->
+            </ul>
+        </aside>
+    </main>
+    <div id="pokemon-details" class="modal">
+        <!-- Pokémon details will appear dynamically -->
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 Pokédex Explorer</p>
+    </footer>
+    <script src="C:\Users\kavit\Desktop\Capstone part 4\Script.js"></script>
+</body>
+</html>
